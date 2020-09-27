@@ -20,6 +20,8 @@ class SearchVC: UIViewController {
     private var chosenSeries: SeriesResults!
     private var chosenType: MediaType!
     
+    private var loadCount = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -48,7 +50,7 @@ class SearchVC: UIViewController {
                 let mediaItem = Media(mediaType: .Movie, movies: movie, series: nil)
                 self?.media.append(mediaItem)
             }
-//            self?.processMedia()
+            self?.processMedia()
         })
         
         self.dataManager?.fetchSeries(url: urlSeries, completion: {[weak self] series in
@@ -62,10 +64,12 @@ class SearchVC: UIViewController {
     }
     
     private func processMedia() {
-        
+        loadCount += 1
+        guard loadCount == 2 else { return }
         self.sortMediaByRating { [weak self] media in
             self?.media = media
             DispatchQueue.main.async {
+                self?.loadCount = 0
                 self?.searchCollectionView.reloadData()
             }
         }
@@ -114,7 +118,6 @@ extension SearchVC: UICollectionViewDelegate {}
 extension SearchVC: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(media.count)
         return media.count
     }
 
@@ -159,14 +162,28 @@ extension SearchVC: ControllerInput {
 // MARK: UISearchBarDelegate Methods
 
 extension SearchVC: UISearchBarDelegate {
+    
+    // TODO: Show a text for no search results
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        media.removeAll()
-        searchCollectionView.reloadData()
+//        media.removeAll()
+//        searchCollectionView.reloadData()
+//        if searchText.count > 0 {
+//            let textToSearch = searchText.replacingOccurrences(of: " ", with: "%20")
+//            self.getData(title: textToSearch)
+//        }
+        if searchText.count == 0 {
+            media.removeAll()
+            searchCollectionView.reloadData()
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let searchText = searchBar.text else { return }
         if searchText.count > 0 {
             let textToSearch = searchText.replacingOccurrences(of: " ", with: "%20")
+            media.removeAll()
             getData(title: textToSearch)
-        } else if searchText.count == 0 {
-            searchCollectionView.reloadData()
         }
     }
 }

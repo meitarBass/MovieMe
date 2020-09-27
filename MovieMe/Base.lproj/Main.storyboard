@@ -43,18 +43,48 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oXJ-Cv-6UT" customClass="CustomImageView" customModule="MovieMe" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="108"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="68"/>
                                                 </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9.1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pWE-CO-oge">
+                                                    <rect key="frame" x="24" y="73" width="100" height="12.5"/>
+                                                    <fontDescription key="fontDescription" name="AmericanTypewriter-Bold" family="American Typewriter" pointSize="10"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="fullStar" translatesAutoresizingMaskIntoConstraints="NO" id="jKP-xv-tUr">
+                                                    <rect key="frame" x="8" y="74" width="10" height="10"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="10" id="Gc4-zn-iWd"/>
+                                                        <constraint firstAttribute="width" constant="10" id="Oaa-7G-TG1"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The God Father" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wgw-mW-RMa">
+                                                    <rect key="frame" x="8" y="88" width="112" height="12"/>
+                                                    <fontDescription key="fontDescription" name="AmericanTypewriter-Semibold" family="American Typewriter" pointSize="10"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
+                                            <color key="backgroundColor" red="0.1215686275" green="0.1215686275" blue="0.1215686275" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstItem="oXJ-Cv-6UT" firstAttribute="leading" secondItem="A0z-bG-8KV" secondAttribute="leading" id="Ejy-KQ-mZm"/>
-                                                <constraint firstAttribute="bottom" secondItem="oXJ-Cv-6UT" secondAttribute="bottom" id="IPO-yt-0pF"/>
+                                                <constraint firstItem="pWE-CO-oge" firstAttribute="centerY" secondItem="jKP-xv-tUr" secondAttribute="centerY" id="IDs-HG-wB4"/>
                                                 <constraint firstAttribute="trailing" secondItem="oXJ-Cv-6UT" secondAttribute="trailing" id="MtV-Xh-Kkn"/>
+                                                <constraint firstAttribute="trailing" secondItem="pWE-CO-oge" secondAttribute="trailing" constant="4" id="RGK-2B-mj9"/>
+                                                <constraint firstAttribute="trailing" secondItem="Wgw-mW-RMa" secondAttribute="trailing" constant="8" id="ZlR-fb-P3a"/>
+                                                <constraint firstItem="Wgw-mW-RMa" firstAttribute="top" secondItem="jKP-xv-tUr" secondAttribute="bottom" constant="4" id="b7U-5t-Pxl"/>
+                                                <constraint firstItem="jKP-xv-tUr" firstAttribute="leading" secondItem="A0z-bG-8KV" secondAttribute="leading" constant="8" id="eXs-dy-c72"/>
+                                                <constraint firstItem="Wgw-mW-RMa" firstAttribute="leading" secondItem="A0z-bG-8KV" secondAttribute="leading" constant="8" id="gVE-AK-hFm"/>
+                                                <constraint firstAttribute="bottom" secondItem="Wgw-mW-RMa" secondAttribute="bottom" constant="8" id="ki0-ez-z7A"/>
+                                                <constraint firstItem="jKP-xv-tUr" firstAttribute="top" secondItem="oXJ-Cv-6UT" secondAttribute="bottom" constant="6" id="lTv-uE-DeJ"/>
+                                                <constraint firstItem="pWE-CO-oge" firstAttribute="leading" secondItem="jKP-xv-tUr" secondAttribute="trailing" constant="6" id="tuy-97-70g"/>
                                                 <constraint firstItem="oXJ-Cv-6UT" firstAttribute="top" secondItem="A0z-bG-8KV" secondAttribute="top" id="xWh-yY-86l"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <connections>
                                             <outlet property="cellImage" destination="oXJ-Cv-6UT" id="b5N-Od-eGy"/>
+                                            <outlet property="ratingLabel" destination="pWE-CO-oge" id="X3n-oa-kQ5"/>
+                                            <outlet property="titleLabel" destination="Wgw-mW-RMa" id="D4k-7z-0PC"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -83,20 +113,49 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6j3-08-fCc" customClass="CustomImageView" customModule="MovieMe" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="160" height="121"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9.1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zvh-1s-1dQ">
+                                                    <rect key="frame" x="24" y="125.5" width="132" height="12.5"/>
+                                                    <fontDescription key="fontDescription" name="AmericanTypewriter-Bold" family="American Typewriter" pointSize="10"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The God Father" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VMA-hy-JYQ">
+                                                    <rect key="frame" x="8" y="142" width="148" height="12"/>
+                                                    <fontDescription key="fontDescription" name="AmericanTypewriter-Semibold" family="American Typewriter" pointSize="10"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="fullStar" translatesAutoresizingMaskIntoConstraints="NO" id="K2n-c0-hsI">
+                                                    <rect key="frame" x="8" y="127" width="10" height="10"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="10" id="ELv-pj-zjP"/>
+                                                        <constraint firstAttribute="width" constant="10" id="vc4-Gs-WJm"/>
+                                                    </constraints>
                                                 </imageView>
                                             </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="backgroundColor" red="0.1215686275" green="0.1215686275" blue="0.1215686275" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="VMA-hy-JYQ" secondAttribute="trailing" constant="4" id="1og-Ti-be5"/>
+                                                <constraint firstItem="Zvh-1s-1dQ" firstAttribute="leading" secondItem="K2n-c0-hsI" secondAttribute="trailing" constant="6" id="9Tp-q2-yv9"/>
+                                                <constraint firstAttribute="bottom" secondItem="VMA-hy-JYQ" secondAttribute="bottom" constant="6" id="BM9-p4-fww"/>
                                                 <constraint firstAttribute="trailing" secondItem="6j3-08-fCc" secondAttribute="trailing" id="INa-kj-84u"/>
-                                                <constraint firstAttribute="bottom" secondItem="6j3-08-fCc" secondAttribute="bottom" id="YLn-Iv-DRF"/>
+                                                <constraint firstItem="Zvh-1s-1dQ" firstAttribute="centerY" secondItem="K2n-c0-hsI" secondAttribute="centerY" id="fXy-It-R5i"/>
+                                                <constraint firstItem="VMA-hy-JYQ" firstAttribute="leading" secondItem="K2n-c0-hsI" secondAttribute="leading" id="gV4-Iw-wU8"/>
+                                                <constraint firstItem="VMA-hy-JYQ" firstAttribute="top" secondItem="Zvh-1s-1dQ" secondAttribute="bottom" constant="4" id="hIP-D0-9KO"/>
+                                                <constraint firstItem="K2n-c0-hsI" firstAttribute="leading" secondItem="66A-Bb-IVg" secondAttribute="leading" constant="8" id="rhr-y7-IQZ"/>
                                                 <constraint firstItem="6j3-08-fCc" firstAttribute="leading" secondItem="66A-Bb-IVg" secondAttribute="leading" id="sFN-Af-5f2"/>
                                                 <constraint firstItem="6j3-08-fCc" firstAttribute="top" secondItem="66A-Bb-IVg" secondAttribute="top" id="v7U-bo-vyI"/>
+                                                <constraint firstItem="K2n-c0-hsI" firstAttribute="top" secondItem="6j3-08-fCc" secondAttribute="bottom" constant="6" id="vBb-Wt-QP3"/>
+                                                <constraint firstAttribute="trailing" secondItem="Zvh-1s-1dQ" secondAttribute="trailing" constant="4" id="xyL-wr-c2k"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="160" height="160"/>
                                         <connections>
                                             <outlet property="cellImage" destination="6j3-08-fCc" id="dYN-bV-FD7"/>
+                                            <outlet property="ratingLabel" destination="Zvh-1s-1dQ" id="ife-fW-s8a"/>
+                                            <outlet property="titleLabel" destination="VMA-hy-JYQ" id="UlL-nU-rdr"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -574,7 +633,7 @@
                                 </cells>
                             </collectionView>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Iw9-BN-FF5" customClass="CustomSearchBar" customModule="MovieMe" customModuleProvider="target">
-                                <rect key="frame" x="16" y="132" width="382" height="56"/>
+                                <rect key="frame" x="16" y="131.5" width="382" height="56"/>
                                 <color key="barTintColor" red="0.18039215689999999" green="0.18039215689999999" blue="0.18039215689999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
@@ -631,7 +690,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="HTv-8L-mMO"/>
+        <segue reference="cue-nM-COa"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="BackBtn" width="31" height="31"/>

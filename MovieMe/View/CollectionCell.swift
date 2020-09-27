@@ -21,10 +21,14 @@ class CollectionCell: UICollectionViewCell {
 
     func setMovieCell(cellModel: MoviesResults?) {
         setCellImage(imageUrl: cellModel?.poster_path)
+        ratingLabel.text = "\(cellModel?.vote_average ?? 0.0)"
+        titleLabel.text = cellModel?.title
     }
     
     func setSeriesCell(cellModel: SeriesResults?) {
         setCellImage(imageUrl: cellModel?.poster_path)
+        ratingLabel.text = "\(cellModel?.vote_average ?? 0.0)"
+        titleLabel.text = cellModel?.name
     }
     
     func setActorCell(cellModel: ActorResults?) {
@@ -38,13 +42,9 @@ class CollectionCell: UICollectionViewCell {
     func setSearchCell(cellModel: Media) {
         switch cellModel.mediaType {
         case .Movie:
-            setCellImage(imageUrl: cellModel.movies?.poster_path)
-            ratingLabel.text = "\(cellModel.movies?.vote_average ?? 0.0)"
-            titleLabel.text = cellModel.movies?.title
+            setMovieCell(cellModel: cellModel.movies)
         case .Series:
-            setCellImage(imageUrl: cellModel.series?.poster_path)
-            ratingLabel.text = "\(cellModel.series?.vote_average ?? 0.0)"
-            titleLabel.text = cellModel.series?.name
+            setSeriesCell(cellModel: cellModel.series)
         }
     }
     

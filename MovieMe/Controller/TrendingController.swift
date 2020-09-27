@@ -124,7 +124,7 @@ extension TrendingController: UICollectionViewDelegateFlowLayout {
             let cellDimension = (width / 2) - 15
             return CGSize(width: cellDimension, height: cellDimension)
         } else {
-            let cellDimesnsion = (width / 2.75) - 30
+            let cellDimesnsion = (width / 2.5) - 30
             return CGSize(width: cellDimesnsion, height: cellDimesnsion)
         }
     }
