@@ -136,13 +136,16 @@ extension DiscoverVC: ControllerInput {
 
 extension DiscoverVC {
     private func setView(mediaType: MediaType) {
-        if let movie = media?.movies {
+        switch mediaType {
+        case .Movie:
+            guard let movie = self.media.movies else { return }
             mediaTitleLabel.text = movie.title
             mediaRatingLabel.text = "\(movie.vote_average ?? 0.0) "
             mediaReleaseYear.text = getYear(date: movie.release_date)
             mediaInfo.text = movie.overview
             self.setImage(imageUrl: movie.poster_path)
-        } else if let series = media?.series {
+        case .Series:
+            guard let series = self.media.series else { return }
             mediaTitleLabel.text = series.name
             mediaRatingLabel.text = "\(series.vote_average ?? 0.0) "
             mediaReleaseYear.text = getYear(date: series.first_air_date)

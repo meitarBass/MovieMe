@@ -36,11 +36,12 @@ class CollectionCell: UICollectionViewCell {
     }
     
     func setSearchCell(cellModel: Media) {
-        if cellModel.mediaType == .Movie {
+        switch cellModel.mediaType {
+        case .Movie:
             setCellImage(imageUrl: cellModel.movies?.poster_path)
             ratingLabel.text = "\(cellModel.movies?.vote_average ?? 0.0)"
             titleLabel.text = cellModel.movies?.title
-        } else {
+        case .Series:
             setCellImage(imageUrl: cellModel.series?.poster_path)
             ratingLabel.text = "\(cellModel.series?.vote_average ?? 0.0)"
             titleLabel.text = cellModel.series?.name

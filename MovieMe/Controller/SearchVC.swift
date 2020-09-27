@@ -40,32 +40,58 @@ class SearchVC: UIViewController {
     func getData(title: String) {
         let urlMovies = SEARCH_URL_MOVIES + title
         let urlSeries = SEARCH_URL_SERIES + title
-        
+
         self.dataManager?.fetchMovies(url: urlMovies, completion: {[weak self] movies in
-            for movie in movies!.results {
+            
+            guard let movies = movies else { return }
+            for movie in movies.results {
                 let mediaItem = Media(mediaType: .Movie, movies: movie, series: nil)
                 self?.media.append(mediaItem)
             }
-            
-            DispatchQueue.main.async {
-                self?.searchCollectionView.reloadData()
-            }
+//            self?.processMedia()
         })
         
         self.dataManager?.fetchSeries(url: urlSeries, completion: {[weak self] series in
-            for series in series!.results {
+            guard let series = series else { return }
+            for series in series.results {
                 let mediaItem = Media(mediaType: .Series, movies: nil, series: series)
                 self?.media.append(mediaItem)
             }
-            DispatchQueue.main.async {
-                self?.searchCollectionView.reloadData()
-            }
+            self?.processMedia()
         })
     }
     
-//    private func sortByRating() {
-//        media.sorted(by: {($0.movies?.vote_average)! > ($1.movies?.vote_average)!})
-//    }
+    private func processMedia() {
+        
+        self.sortMediaByRating { [weak self] media in
+            self?.media = media
+            DispatchQueue.main.async {
+                self?.searchCollectionView.reloadData()
+            }
+        }
+    }
+    
+    private func sortMediaByRating(completion: @escaping ([Media]) -> ()) {
+        let sortedMedia = self.media.sorted { (media1, media2) -> Bool in
+            switch media1.mediaType {
+            case .Movie:
+                switch media2.mediaType {
+                case .Movie:
+                    return media1.movies?.vote_average ?? 0.0 > media2.movies?.vote_average ?? 0.0
+                case .Series:
+                    return media1.movies?.vote_average ?? 0.0 > media2.series?.vote_average ?? 0.0
+                }
+            case .Series:
+                switch media2.mediaType {
+                    case .Movie:
+                        return media1.series?.vote_average ?? 0.0 > media2.movies?.vote_average ?? 0.0
+                    case .Series:
+                        return media1.series?.vote_average ?? 0.0 > media2.series?.vote_average ?? 0.0
+                }
+            }
+        }
+        completion(sortedMedia)
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let discoverVC = segue.destination as? DiscoverVC else { return }
@@ -88,6 +114,7 @@ extension SearchVC: UICollectionViewDelegate {}
 extension SearchVC: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(media.count)
         return media.count
     }
 
@@ -98,10 +125,11 @@ extension SearchVC: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if media[indexPath.row].mediaType == .Movie {
+        switch media[indexPath.row].mediaType {
+        case .Movie:
             chosenMovie = media[indexPath.row].movies
             chosenType = .Movie
-        } else if media[indexPath.row].mediaType == .Series {
+        case .Series:
             chosenSeries = media[indexPath.row].series
             chosenType = .Series
         }
@@ -133,6 +161,7 @@ extension SearchVC: ControllerInput {
 extension SearchVC: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         media.removeAll()
+        searchCollectionView.reloadData()
         if searchText.count > 0 {
             let textToSearch = searchText.replacingOccurrences(of: " ", with: "%20")
             getData(title: textToSearch)
@@ -141,3 +170,4 @@ extension SearchVC: UISearchBarDelegate {
         }
     }
 }
+    
