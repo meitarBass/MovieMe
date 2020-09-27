@@ -8,7 +8,13 @@
 
 import Foundation
 
-struct Actor {
-    let name: String
-    let actorImagePath: String
+struct Actor: Codable {
+    let cast: [ActorResults]
+}
+
+struct ActorResults: Codable {
+    
+    let name: String?
+    let profile_path: String?
+    
 }

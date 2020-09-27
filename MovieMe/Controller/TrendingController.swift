@@ -17,27 +17,27 @@ class TrendingController: UIViewController {
     @IBOutlet weak var seriesCollectionView: UICollectionView!
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
-    private var dataManager: DataManagerProtocol?
-    private var apiManager: ApiMediaManager?
-    
-    private var data: Data!
-    private var mediaMovies: [Media]!
-    private var imagesMovies = [UIImage?]()
+    private var dataManager: (DataManagerProtocol & ApiMediaManagerProtocol)?
+    private var data: DataManager!
 
-    private var mediaSeries: [Media]!
-    private var imagesSeries = [UIImage?]()
+    private var movies: Movie?
+    private var series: Series?
     
-    private var chosenMediaItem: Media!
-    private var chosenMediaImage: UIImage!
+    private var chosenMovie: MoviesResults!
+    private var chosenSeries: SeriesResults!
+    private var chosenType: MediaType!
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
         setupCollectionViews()
         dependencyInjection()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         getData()
-        
     }
     
     private func setupCollectionViews() {
@@ -49,40 +49,25 @@ class TrendingController: UIViewController {
     }
     
     private func getData() {
-        self.apiManager?.fetchTrending(url: TRENDING_MOVIE_URL,completion: { (media) in
-            guard let fetchedMedia = media else { return }
-            self.mediaMovies = fetchedMedia
-            for item in self.mediaMovies {
-                self.apiManager?.fetchImage(imagePath: item.movieImagePath, completion: { (image) in
-                    guard let fetchedImage = image else { return }
-                    self.imagesMovies.append(fetchedImage)
-                    DispatchQueue.main.sync {
-                        self.moviesCollectionView.reloadData()
-                    }
-                })
+        self.dataManager?.fetchMovies(url: TRENDING_MOVIE_URL, completion: {[weak self] movies in
+            self?.movies = movies
+            DispatchQueue.main.async {
+                self?.moviesCollectionView.reloadData()
             }
         })
-        
-        self.apiManager?.fetchTrending(url: TRENDING_SERIES_URL,completion: { (media) in
-            guard let fetchedMedia = media else { return }
-            self.mediaSeries = fetchedMedia
-            for item in self.mediaSeries {
-                self.apiManager?.fetchImage(imagePath: item.movieImagePath, completion: { (image) in
-                    guard let fetchedImage = image else { return }
-                    self.imagesSeries.append(fetchedImage)
-                    DispatchQueue.main.sync {
-                        self.seriesCollectionView.reloadData()
-                    }
-                })
+    
+        self.dataManager?.fetchSeries(url: TRENDING_SERIES_URL, completion: {[weak self] series in
+            self?.series = series
+            DispatchQueue.main.async {
+                self?.seriesCollectionView.reloadData()
             }
         })
     }
     
     private func dependencyInjection() {
-        let data = Data(delegate: self)
-        self.apiManager = data
+        let dataManager = DataManager(delegate: self)
+        self.dataManager = dataManager
     }
-
 
 }
 
@@ -96,32 +81,32 @@ extension TrendingController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == moviesCollectionView {
-            return imagesMovies.count
+            return movies?.results.count ?? 0
         } else {
-            return imagesSeries.count
+            return series?.results.count ?? 0
         }
         
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == moviesCollectionView {
-            let cell = moviesCollectionView.dequeueReusableCell(withReuseIdentifier: "movieCell", for: indexPath) as! CategoryCollectionCell
-            cell.setCell(image: ((imagesMovies[indexPath.row]) ?? UIImage(named: "BackBtn"))!)
+            let cell = moviesCollectionView.dequeueReusableCell(withReuseIdentifier: "movieCell", for: indexPath) as! CollectionCell
+            cell.setMovieCell(cellModel: self.movies?.results[indexPath.row])
             return cell
         } else {
-            let cell = seriesCollectionView.dequeueReusableCell(withReuseIdentifier: "seriesCell", for: indexPath) as! CategoryCollectionCell
-            cell.setCell(image: ((imagesSeries[indexPath.row]) ?? UIImage(named: "BackBtn"))!)
+            let cell = seriesCollectionView.dequeueReusableCell(withReuseIdentifier: "seriesCell", for: indexPath) as! CollectionCell
+            cell.setSeriesCell(cellModel: self.series?.results[indexPath.row])
             return cell
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == moviesCollectionView {
-            chosenMediaItem = mediaMovies[indexPath.row]
-            chosenMediaImage = imagesMovies[indexPath.row]
+            chosenMovie = movies?.results[indexPath.row]
+            chosenType = .Movie
         } else if collectionView == seriesCollectionView {
-            chosenMediaItem = mediaSeries[indexPath.row]
-            chosenMediaImage = imagesSeries[indexPath.row]
+            chosenSeries = series?.results[indexPath.row]
+            chosenType = .Series
         }
         performSegue(withIdentifier: "toDiscoverVC", sender: nil)
     }
@@ -158,9 +143,11 @@ extension TrendingController: ControllerInput {
 extension TrendingController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let discoverVC = segue.destination as? DiscoverVC else { return }
-        guard let item = chosenMediaItem, let img = chosenMediaImage else { return }
-        discoverVC.mediaItem = item
-        discoverVC.mediaImg = img
-        print(item.title)
+        
+        if chosenType == .Movie, let movie = chosenMovie {
+            discoverVC.media = Media(mediaType: .Movie, movies: movie, series: nil)
+        } else if let series = chosenSeries {
+            discoverVC.media = Media(mediaType: .Series, movies: nil, series: series)
+        }
     }
 }

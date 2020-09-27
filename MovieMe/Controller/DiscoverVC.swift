@@ -8,6 +8,21 @@
 
 import UIKit
 
+struct Media {
+    
+    var mediaType: MediaType
+    var movies: MoviesResults?
+    var series: SeriesResults?
+    
+}
+
+// MARK: mediaType Enum
+
+enum MediaType {
+    case Movie
+    case Series
+}
+
 class DiscoverVC: UIViewController {
     
     @IBOutlet weak var mediaImage: UIImageView!
@@ -17,60 +32,65 @@ class DiscoverVC: UIViewController {
     @IBOutlet weak var mediaInfo: UILabel!
     @IBOutlet weak var actorsCollectionView: UICollectionView!
     
-    var mediaItem: Media!
-    var mediaImg: UIImage!
+    private var dataManager: ApiMediaManagerProtocol?
     
-    private var apiActorManager: ApiActorManager?
-    
-    private var actors: [Actor]!
-    private var actorsImage: [UIImage] = [UIImage]()
+    var media: Media!
+        
+    private var actors: Actor?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        mediaImage.image = mediaImg
-        
-        guard let media = mediaItem else { return }
-        mediaTitleLabel.text = media.title
-        mediaRatingLabel.text = "\(media.rating)"
-        mediaReleaseYear.text = media.release_date
-        mediaInfo.text = media.overview
         
         actorsCollectionView.delegate = self
         actorsCollectionView.dataSource = self
-        
+
         self.dependencyInjection()
         self.getData()
+        self.setView(mediaType: media.mediaType)
+            
     }
     
     private func getData() {
-        self.apiActorManager?.fetchActor(id: "\(mediaItem.id)", completion: { (actors) in
-            guard let fetchedActors = actors else { return }
-            self.actors = fetchedActors
-            for actor in self.actors {
-                self.apiActorManager?.fetchActorImage(imagePath: actor.actorImagePath, completion: { (img) in
-                    guard let fetchedImage = img else {
-                        self.actorsImage.append(UIImage(named: "BackBtn")!)
-                        return
-                    }
-                    self.actorsImage.append(fetchedImage)
-                    DispatchQueue.main.async {
-                        self.actorsCollectionView.reloadData()
-                    }
-                })
+        var url = ""
+        guard let media = media else { return }
+        
+        if media.mediaType == .Movie, let id = media.movies?.id {
+            url = BASE_URL + "movie/\(id)/credits?api_key=\(API_KEY)"
+        } else if media.mediaType == .Series, let id = media.series?.id {
+            url = BASE_URL + "tv/\(id)/credits?api_key=\(API_KEY)"
+        }
+        
+        self.dataManager?.fetchActors(url: url, completion: {[weak self] (actors) in
+            self?.actors = actors
+            DispatchQueue.main.async {
+                self?.actorsCollectionView.reloadData()
             }
         })
     }
     
     private func dependencyInjection() {
-        let data = Data(delegate: self)
-        self.apiActorManager = data
+        let dataManager = DataManager(delegate: self)
+        self.dataManager = dataManager
     }
 
     @IBAction func favouriteButtonTapped(_ sender: Any) {
-        
+        print("add to favorite")
     }
     @IBAction func backButtonTapped(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    private func setImage(imageUrl: String?) {
+        if let imageUrl = URL(string: IMAGE_BASE + (imageUrl ?? "") ) {
+            mediaImage.kf.indicatorType = .activity
+            mediaImage.kf.setImage(
+                with: imageUrl,
+                options: [
+                    .scaleFactor(UIScreen.main.scale),
+                    .transition(.fade(0.5)),
+                    .cacheOriginalImage
+            ])
+        }
     }
 }
 
@@ -83,12 +103,12 @@ extension DiscoverVC: UICollectionViewDelegate {}
 extension DiscoverVC: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.actorsImage.count
+        return self.actors?.cast.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = actorsCollectionView.dequeueReusableCell(withReuseIdentifier: "actorCell", for: indexPath) as! CategoryCollectionCell
-        cell.setCell(image: actorsImage[indexPath.row])
+        let cell = actorsCollectionView.dequeueReusableCell(withReuseIdentifier: "actorCell", for: indexPath) as! CollectionCell
+        cell.setActorCell(cellModel: self.actors?.cast[indexPath.row])
         return cell
     }
 }
@@ -104,8 +124,37 @@ extension DiscoverVC: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: ControllerInput Methods
+
 extension DiscoverVC: ControllerInput {
     func handleError(error: Error) {
         
     }
 }
+
+// MARK: DiscoverVC Methods
+
+extension DiscoverVC {
+    private func setView(mediaType: MediaType) {
+        if let movie = media?.movies {
+            mediaTitleLabel.text = movie.title
+            mediaRatingLabel.text = "\(movie.vote_average ?? 0.0) "
+            mediaReleaseYear.text = getYear(date: movie.release_date)
+            mediaInfo.text = movie.overview
+            self.setImage(imageUrl: movie.poster_path)
+        } else if let series = media?.series {
+            mediaTitleLabel.text = series.name
+            mediaRatingLabel.text = "\(series.vote_average ?? 0.0) "
+            mediaReleaseYear.text = getYear(date: series.first_air_date)
+            mediaInfo.text = series.overview
+            self.setImage(imageUrl: series.poster_path)
+        }
+    }
+    
+    private func getYear(date: String?) -> String {
+        guard let date = date else { return "" }
+        let year = date.split(separator: "-")
+        return "\(year[0])"
+    }
+}
+
