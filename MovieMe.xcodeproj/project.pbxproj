@@ -28,6 +28,7 @@
 		A9B94A7E251FA2B30017AAD8 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B94A7D251FA2B30017AAD8 /* Movie.swift */; };
 		A9B94A80251FA8BF0017AAD8 /* Series.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B94A7F251FA8BF0017AAD8 /* Series.swift */; };
 		A9B94A8625208A930017AAD8 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B94A8525208A930017AAD8 /* CustomSearchBar.swift */; };
+		A9CC351B2521E99F0053A366 /* MediaFavourite.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CC351A2521E99F0053A366 /* MediaFavourite.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		A9B94A7D251FA2B30017AAD8 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		A9B94A7F251FA8BF0017AAD8 /* Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Series.swift; sourceTree = "<group>"; };
 		A9B94A8525208A930017AAD8 /* CustomSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
+		A9CC351A2521E99F0053A366 /* MediaFavourite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFavourite.swift; sourceTree = "<group>"; };
 		B2510A7C8AFA0E9723DF76EF /* Pods-MovieMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieMe.debug.xcconfig"; path = "Target Support Files/Pods-MovieMe/Pods-MovieMe.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,6 +128,7 @@
 		A9B94A5D251E28740017AAD8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A9CC35192521E9760053A366 /* Realm Model */,
 				A9B94A68251E7B8F0017AAD8 /* Actor.swift */,
 				A9B94A74251E7EA60017AAD8 /* DataManager.swift */,
 				A9B94A7D251FA2B30017AAD8 /* Movie.swift */,
@@ -163,6 +166,14 @@
 				A9B94A7B251F9DAA0017AAD8 /* NetworkManager.swift */,
 			);
 			path = "Network Services";
+			sourceTree = "<group>";
+		};
+		A9CC35192521E9760053A366 /* Realm Model */ = {
+			isa = PBXGroup;
+			children = (
+				A9CC351A2521E99F0053A366 /* MediaFavourite.swift */,
+			);
+			path = "Realm Model";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -282,6 +293,7 @@
 			files = (
 				A9B94A71251E7D540017AAD8 /* CollectionCell.swift in Sources */,
 				A9B94A61251E2D360017AAD8 /* MapVC.swift in Sources */,
+				A9CC351B2521E99F0053A366 /* MediaFavourite.swift in Sources */,
 				A9B94A63251E2D430017AAD8 /* SearchVC.swift in Sources */,
 				A9B94A7C251F9DAA0017AAD8 /* NetworkManager.swift in Sources */,
 				A9B94A79251EAB7D0017AAD8 /* CustomImageView.swift in Sources */,
@@ -444,6 +456,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9PG63NVD7U;
 				INFOPLIST_FILE = MovieMe/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -463,6 +476,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9PG63NVD7U;
 				INFOPLIST_FILE = MovieMe/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

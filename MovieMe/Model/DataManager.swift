@@ -9,11 +9,10 @@
 import UIKit
 import RealmSwift
 
-protocol DataManagerProtocol: class {
-    func saveData()
-//    func getData() -> [Media]?
-    func deleteFavorite(index: Int)
-    func addNewFavorite()
+protocol RealmManagerProtocol: class {
+    func saveData<T>(object: Object, modelType: T.Type)
+    func loadData<T: Object>(modelType: T.Type) -> Results<T>?
+    func deleteData<T>(object: Object, modelType: T.Type)
 }
 
 protocol ApiMediaManagerProtocol: class {
@@ -24,8 +23,9 @@ protocol ApiMediaManagerProtocol: class {
 
 class DataManager {
     
-    private var actors: [Actor] = [Actor]()
+    private let realm = try! Realm()
     
+    private var actors: [Actor] = [Actor]()
     private weak var delegate: ControllerInput?
     
     init(delegate: ControllerInput) {
@@ -34,22 +34,31 @@ class DataManager {
     
 }
 
-extension DataManager: DataManagerProtocol {
-    
-    func saveData() {
-        print("Saved")
+extension DataManager: RealmManagerProtocol {
+        
+    func saveData<T>(object: Object, modelType: T.Type) {
+        do {
+            try realm.write({
+                realm.add(object)
+            })
+        } catch {
+            print("Error saving category \(error)")
+        }
     }
     
-    func getData() -> [Media]? {
-        return nil
+    func loadData<T: Object>(modelType: T.Type) -> Results<T>? {
+        let loadedData = realm.objects(modelType)
+        return loadedData
     }
-    
-    func deleteFavorite(index: Int) {
-        print("Deleted")
-    }
-    
-    func addNewFavorite() {
-        print("Added")
+
+    func deleteData<T>(object: Object, modelType: T.Type) {
+        do {
+            try realm.write {
+                realm.delete(object)
+            }
+        } catch {
+            print("Error deleting category \(error)")
+        }
     }
     
 }

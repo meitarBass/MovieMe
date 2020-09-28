@@ -17,7 +17,7 @@ class TrendingController: UIViewController {
     @IBOutlet weak var seriesCollectionView: UICollectionView!
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
-    private var dataManager: (DataManagerProtocol & ApiMediaManagerProtocol)?
+    private var dataManager: (RealmManagerProtocol & ApiMediaManagerProtocol)?
     private var data: DataManager!
 
     private var movies: Movie?
@@ -122,10 +122,10 @@ extension TrendingController: UICollectionViewDelegateFlowLayout {
         
         if collectionView == moviesCollectionView {
             let cellDimension = (width / 2) - 15
-            return CGSize(width: cellDimension, height: cellDimension)
+            return CGSize(width: cellDimension, height: cellDimension + 110)
         } else {
-            let cellDimesnsion = (width / 2.5) - 30
-            return CGSize(width: cellDimesnsion, height: cellDimesnsion)
+            let cellDimesnsion = (width / 2) - 30
+            return CGSize(width: cellDimesnsion - 30, height: cellDimesnsion + 20)
         }
     }
 }

@@ -11,7 +11,7 @@ import UIKit
 class SearchVC: UIViewController {
 
     @IBOutlet weak var searchCollectionView: UICollectionView!
-    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var searchBar: CustomSearchBar!
     
     private var dataManager: ApiMediaManagerProtocol?
     private var media : [Media] = [Media]()

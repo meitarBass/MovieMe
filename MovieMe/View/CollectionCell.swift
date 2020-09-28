@@ -25,6 +25,12 @@ class CollectionCell: UICollectionViewCell {
         titleLabel.text = cellModel?.title
     }
     
+    func setFavouriteCell(cellModel: MediaFavourite?) {
+        setCellImage(imageUrl: cellModel?.poster_path)
+        ratingLabel.text = "\(cellModel?.vote_average ?? 0.0)"
+        titleLabel.text = cellModel?.title
+    }
+    
     func setSeriesCell(cellModel: SeriesResults?) {
         setCellImage(imageUrl: cellModel?.poster_path)
         ratingLabel.text = "\(cellModel?.vote_average ?? 0.0)"
