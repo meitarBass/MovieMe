@@ -19,13 +19,15 @@ protocol ApiMediaManagerProtocol: class {
     func fetchMovies(url: String, completion: @escaping (Movie?) -> ())
     func fetchSeries(url: String, completion: @escaping (Series?) -> ())
     func fetchActors(url: String, completion: @escaping (Actor?) -> ())
+    
+    func fetchMovieTheaters(url: String, completion: @escaping (MovieTheater?) -> ())
+    func fetchMovieResultsIntoTheaters(theatersResult: MovieTheater?) -> [MovieTheaterResult]?
 }
 
 class DataManager {
     
     private let realm = try! Realm()
     
-    private var actors: [Actor] = [Actor]()
     private weak var delegate: ControllerInput?
     
     init(delegate: ControllerInput) {
@@ -81,6 +83,23 @@ extension DataManager: ApiMediaManagerProtocol {
         NetworkServices.shared.networkRequest(url: url, modelType: Actor.self) { (actors) in
             completion(actors)
         }
+    }
+    
+    func fetchMovieTheaters(url: String, completion: @escaping (MovieTheater?) -> ()) {
+        NetworkServices.shared.networkRequest(url: url, modelType: MovieTheater.self) { (movieTheaters) in
+            completion(movieTheaters)
+        }
+    }
+    
+    func fetchMovieResultsIntoTheaters(theatersResult: MovieTheater?) -> [MovieTheaterResult]? {
+        var venueArr = [MovieTheaterResult]()
+        guard let result = theatersResult else { return nil}
+        for group in result.response.groups {
+            for item in group.items {
+                venueArr.append(item.venue)
+            }
+        }
+        return venueArr
     }
     
 }

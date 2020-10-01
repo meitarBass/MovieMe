@@ -18,6 +18,7 @@ struct NetworkServices {
             completion(nil)
             return
         }
+        
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard error == nil else {
                 debugPrint(error.debugDescription)
