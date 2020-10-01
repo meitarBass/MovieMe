@@ -29,6 +29,8 @@
 		A9B94A80251FA8BF0017AAD8 /* Series.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B94A7F251FA8BF0017AAD8 /* Series.swift */; };
 		A9B94A8625208A930017AAD8 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B94A8525208A930017AAD8 /* CustomSearchBar.swift */; };
 		A9CC351B2521E99F0053A366 /* MediaFavourite.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CC351A2521E99F0053A366 /* MediaFavourite.swift */; };
+		A9CC351F25251CBE0053A366 /* MovieTheater.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CC351E25251CBE0053A366 /* MovieTheater.swift */; };
+		A9CC3521252650220053A366 /* CustomMovieTheaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CC3520252650220053A366 /* CustomMovieTheaterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +59,8 @@
 		A9B94A7F251FA8BF0017AAD8 /* Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Series.swift; sourceTree = "<group>"; };
 		A9B94A8525208A930017AAD8 /* CustomSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
 		A9CC351A2521E99F0053A366 /* MediaFavourite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFavourite.swift; sourceTree = "<group>"; };
+		A9CC351E25251CBE0053A366 /* MovieTheater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieTheater.swift; sourceTree = "<group>"; };
+		A9CC3520252650220053A366 /* CustomMovieTheaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMovieTheaterView.swift; sourceTree = "<group>"; };
 		B2510A7C8AFA0E9723DF76EF /* Pods-MovieMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieMe.debug.xcconfig"; path = "Target Support Files/Pods-MovieMe/Pods-MovieMe.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -128,11 +132,10 @@
 		A9B94A5D251E28740017AAD8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A9CC35192521E9760053A366 /* Realm Model */,
-				A9B94A68251E7B8F0017AAD8 /* Actor.swift */,
 				A9B94A74251E7EA60017AAD8 /* DataManager.swift */,
-				A9B94A7D251FA2B30017AAD8 /* Movie.swift */,
-				A9B94A7F251FA8BF0017AAD8 /* Series.swift */,
+				A9CC351D25251CAD0053A366 /* Theater Model */,
+				A9CC351C25251C9F0053A366 /* Media Model */,
+				A9CC35192521E9760053A366 /* Realm Model */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -144,6 +147,7 @@
 				A9B94A70251E7D540017AAD8 /* CollectionCell.swift */,
 				A9B94A78251EAB7D0017AAD8 /* CustomImageView.swift */,
 				A9B94A8525208A930017AAD8 /* CustomSearchBar.swift */,
+				A9CC3520252650220053A366 /* CustomMovieTheaterView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -174,6 +178,24 @@
 				A9CC351A2521E99F0053A366 /* MediaFavourite.swift */,
 			);
 			path = "Realm Model";
+			sourceTree = "<group>";
+		};
+		A9CC351C25251C9F0053A366 /* Media Model */ = {
+			isa = PBXGroup;
+			children = (
+				A9B94A68251E7B8F0017AAD8 /* Actor.swift */,
+				A9B94A7D251FA2B30017AAD8 /* Movie.swift */,
+				A9B94A7F251FA8BF0017AAD8 /* Series.swift */,
+			);
+			path = "Media Model";
+			sourceTree = "<group>";
+		};
+		A9CC351D25251CAD0053A366 /* Theater Model */ = {
+			isa = PBXGroup;
+			children = (
+				A9CC351E25251CBE0053A366 /* MovieTheater.swift */,
+			);
+			path = "Theater Model";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -301,10 +323,12 @@
 				A9B94A65251E2D560017AAD8 /* FavouritesVC.swift in Sources */,
 				A9B94A4E251BE2610017AAD8 /* TrendingController.swift in Sources */,
 				A9B94A7E251FA2B30017AAD8 /* Movie.swift in Sources */,
+				A9CC3521252650220053A366 /* CustomMovieTheaterView.swift in Sources */,
 				A9B94A6F251E7CB80017AAD8 /* CustomView.swift in Sources */,
 				A9B94A4A251BE2610017AAD8 /* AppDelegate.swift in Sources */,
 				A9B94A75251E7EA60017AAD8 /* DataManager.swift in Sources */,
 				A9B94A4C251BE2610017AAD8 /* SceneDelegate.swift in Sources */,
+				A9CC351F25251CBE0053A366 /* MovieTheater.swift in Sources */,
 				A9B94A77251E8D440017AAD8 /* Constants.swift in Sources */,
 				A9B94A8625208A930017AAD8 /* CustomSearchBar.swift in Sources */,
 				A9B94A69251E7B8F0017AAD8 /* Actor.swift in Sources */,
