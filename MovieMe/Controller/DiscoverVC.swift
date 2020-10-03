@@ -19,8 +19,8 @@ struct Media {
 
 // MARK: mediaType Enum
 
-enum MediaType {
-    case Movie
+enum MediaType: Int {
+    case Movie = 0
     case Series
 }
 
@@ -38,7 +38,17 @@ class DiscoverVC: UIViewController {
     private var realmManager: RealmManagerProtocol?
     
     var media: Media!
+    
     private var favouriteMedia: Results<MediaFavourite>?
+    private var likeState: Bool = false {
+        didSet {
+            if likeState {
+                heartButton.setImage(UIImage(named: "heartYellow"), for: .normal)
+            } else {
+                heartButton.setImage(UIImage(named: "heartWhite"), for: .normal)
+            }
+        }
+    }
         
     private var actors: Actor?
 
@@ -52,8 +62,7 @@ class DiscoverVC: UIViewController {
         self.getData()
         self.setView(mediaType: media.mediaType)
         
-        guard let _ = wasMovieLiked() else { return }
-        heartButton.setImage(UIImage(named: "heartYellow"), for: .normal)
+        self.wasMovieLiked()
     }
     
     private func getData() {
@@ -81,30 +90,23 @@ class DiscoverVC: UIViewController {
         realmManager?.deleteData(object: object, modelType: MediaFavourite.self)
     }
     
-    private func wasMovieLiked() -> Results<MediaFavourite>? {
+    private func wasMovieLiked() {
+        guard let realmManager = realmManager else { return }
+
         switch media.mediaType {
 
         case .Movie:
-            guard let favouritesToDelete = self.favouriteMedia?.filter("id == %@", (media.movies?.id)!) else { return nil }
-            if favouritesToDelete.count > 0 {
-                return favouritesToDelete
-            }
-            return nil
+            likeState = realmManager.isMovieLiked(id: media.movies?.id, modelType: MediaFavourite.self)
         case .Series:
-            guard let favouritesToDelete = self.favouriteMedia?.filter("id == %@", (media.series?.id)!) else { return nil }
-            if favouritesToDelete.count > 0 {
-                return favouritesToDelete
-            }
-            return nil
+            likeState = realmManager.isMovieLiked(id: media.series?.id, modelType: MediaFavourite.self)
         }
-        
     }
     
     private func dependencyInjection() {
-        let dataManager = DataManager(delegate: self)
+        let dataManager = MediaManager(delegate: self)
         self.dataManager = dataManager
         
-        let realmManager = DataManager(delegate: self)
+        let realmManager = RealmManager(delegate: self)
         self.realmManager = realmManager
     }
 
@@ -121,6 +123,8 @@ class DiscoverVC: UIViewController {
             media_to_save.vote_average = media.vote_average ?? 0.0
             media_to_save.overview = media.overview
             media_to_save.poster_path = media.poster_path
+            media_to_save.isFavourite = true
+            media_to_save.type = MediaType.Movie.rawValue
         case .Series:
             guard let media = media.series else { return }
             media_to_save.release_date = media.first_air_date
@@ -129,18 +133,17 @@ class DiscoverVC: UIViewController {
             media_to_save.vote_average = media.vote_average ?? 0.0
             media_to_save.overview = media.overview
             media_to_save.poster_path = media.poster_path
+            media_to_save.isFavourite = true
+            media_to_save.type = MediaType.Series.rawValue
         }
-        
-        guard let mediaToDelete = wasMovieLiked() else {
+
+        if likeState {
+            self.realmManager?.deleteDataFromId(id: media_to_save.id, modelType: MediaFavourite.self)
+            likeState = false
+        } else {
             self.realmManager?.saveData(object: media_to_save, modelType: MediaFavourite.self)
-            heartButton.setImage(UIImage(named: "heartYellow"), for: .normal)
-            return
+            likeState = true
         }
-        
-        for media in mediaToDelete {
-            self.realmManager?.deleteData(object: media, modelType: MediaFavourite.self)
-        }
-        heartButton.setImage(UIImage(named: "heartWhite"), for: .normal)
     }
     
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -195,7 +198,7 @@ extension DiscoverVC: UICollectionViewDelegateFlowLayout {
 
 extension DiscoverVC: ControllerInput {
     func handleError(error: Error) {
-        
+        self.presentAlert(title: "error", err: error.localizedDescription, errType: nil)
     }
 }
 

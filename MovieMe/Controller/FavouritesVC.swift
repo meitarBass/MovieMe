@@ -36,13 +36,13 @@ class FavouritesVC: UIViewController {
     }
     
     private func dependencyInjection() {
-        let dataManager = DataManager(delegate: self)
-        self.realmManager = dataManager
+        let realmManager = RealmManager(delegate: self)
+        self.realmManager = realmManager
     }
     
     private func loadData() {
         guard let loadedData = realmManager?.loadData(modelType: MediaFavourite.self) else { return }
-        media = loadedData
+        media = loadedData.filter("isFavourite == %@", true)
         favouritesCollection.reloadData()
     }
     
@@ -95,10 +95,11 @@ extension FavouritesVC: UICollectionViewDelegateFlowLayout {
 
 extension FavouritesVC: ControllerInput {
     func handleError(error: Error) {
-        
+        self.presentAlert(title: "error", err: error.localizedDescription, errType: nil)
     }
 }
 
+// MARK: Search Methods
 
 extension FavouritesVC: UISearchBarDelegate {
     

@@ -17,5 +17,7 @@ class MediaFavourite: Object {
     @objc dynamic var release_date: String?
     @objc dynamic var overview: String?
     @objc dynamic var poster_path: String?
-        
+    @objc dynamic var type: Int = -1
+    @objc dynamic var isFavourite: Bool = false
+    
 }

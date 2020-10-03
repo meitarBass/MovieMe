@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 protocol ControllerInput: class {
     func handleError(error: Error)
@@ -17,8 +18,10 @@ class TrendingController: UIViewController {
     @IBOutlet weak var seriesCollectionView: UICollectionView!
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
-    private var dataManager: (RealmManagerProtocol & ApiMediaManagerProtocol)?
-    private var data: DataManager!
+    private var dataManager: ApiMediaManagerProtocol?
+    private var realmManager: RealmManagerProtocol?
+    
+    private var data: MediaManager!
 
     private var movies: Movie?
     private var series: Series?
@@ -26,6 +29,8 @@ class TrendingController: UIViewController {
     private var chosenMovie: MoviesResults!
     private var chosenSeries: SeriesResults!
     private var chosenType: MediaType!
+    
+    private var trendingMedia: Results<MediaFavourite>?
 
 
     override func viewDidLoad() {
@@ -33,6 +38,9 @@ class TrendingController: UIViewController {
         // Do any additional setup after loading the view.
         setupCollectionViews()
         dependencyInjection()
+        
+//        getTrendingMedia()
+//        parseDataIntoMovies()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -65,8 +73,11 @@ class TrendingController: UIViewController {
     }
     
     private func dependencyInjection() {
-        let dataManager = DataManager(delegate: self)
+        let dataManager = MediaManager(delegate: self)
         self.dataManager = dataManager
+        
+        let realmManager = RealmManager(delegate: self)
+        self.realmManager = realmManager
     }
 
 }
@@ -81,8 +92,10 @@ extension TrendingController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == moviesCollectionView {
+            self.saveTrendingMoviesForOfflineMode()
             return movies?.results.count ?? 0
         } else {
+            self.saveTrendingSeriesForOfflineMode()
             return series?.results.count ?? 0
         }
         
@@ -134,7 +147,7 @@ extension TrendingController: UICollectionViewDelegateFlowLayout {
 
 extension TrendingController: ControllerInput {
     func handleError(error: Error) {
-//        self.presentAlert(title: "error", message: error.localizedDescription, actionText: nil) { (_) in}
+        self.presentAlert(title: "error", err: error.localizedDescription, errType: nil)
     }
 }
 
@@ -150,4 +163,75 @@ extension TrendingController {
             discoverVC.media = Media(mediaType: .Series, movies: nil, series: series)
         }
     }
+}
+
+// MARK: - TrendingController Offline Mode
+
+extension TrendingController {
+    
+    private func saveTrendingMoviesForOfflineMode() {
+        guard let movies = self.movies else { return }
+        for movie in movies.results {
+            let movieToSave = MediaFavourite()
+            
+            movieToSave.id = movie.id ?? -1
+            movieToSave.poster_path = movie.poster_path
+            movieToSave.overview = movie.overview
+            movieToSave.release_date = movie.release_date
+            movieToSave.title = movie.title
+            movieToSave.vote_average = movie.vote_average ?? 0.0
+            movieToSave.type = MediaType.Movie.rawValue
+            
+            if !(self.realmManager?.isMediaSaved(id: movieToSave.id, modelType: MediaFavourite.self) ?? true) {
+                self.realmManager?.saveData(object: movieToSave, modelType: MediaFavourite.self)
+            }
+        }
+    }
+    
+    private func saveTrendingSeriesForOfflineMode() {
+        guard let series = self.series else { return }
+        for series in series.results {
+            let seriesToSave = MediaFavourite()
+            
+            seriesToSave.id = series.id ?? -1
+            seriesToSave.poster_path = series.poster_path
+            seriesToSave.overview = series.overview
+            seriesToSave.release_date = series.first_air_date
+            seriesToSave.title = series.name
+            seriesToSave.vote_average = series.vote_average ?? 0.0
+            seriesToSave.type = MediaType.Series.rawValue
+            
+            if !(self.realmManager?.isMediaSaved(id: seriesToSave.id, modelType: MediaFavourite.self) ?? true) {
+                self.realmManager?.saveData(object: seriesToSave, modelType: MediaFavourite.self)
+            }
+        }
+    }
+    
+    private func getTrendingMedia() {
+        guard let loadedData = realmManager?.loadData(modelType: MediaFavourite.self) else { return }
+        trendingMedia = loadedData
+    }
+    
+    private func parseDataIntoMovies() {
+        guard let trendingMedia = self.trendingMedia else { return }
+        var trendingMovies: [MoviesResults] = [MoviesResults]()
+        var trendingSeries: [SeriesResults] = [SeriesResults]()
+        
+        for media in trendingMedia {
+            if media.type == MediaType.Movie.rawValue {
+                let movie = MoviesResults(id: media.id, vote_average: media.vote_average, title: media.title, release_date: media.release_date, overview: media.overview, poster_path: media.poster_path)
+                trendingMovies.append(movie)
+            } else if media.type == MediaType.Series.rawValue {
+                let series = SeriesResults(id: media.id, vote_average: media.vote_average, name: media.title, first_air_date: media.release_date, overview: media.overview, poster_path: media.poster_path)
+                trendingSeries.append(series)
+            }
+        }
+        
+        movies = Movie(results: trendingMovies)
+        series = Series(results: trendingSeries)
+        
+        self.moviesCollectionView.reloadData()
+        self.seriesCollectionView.reloadData()
+    }
+    
 }

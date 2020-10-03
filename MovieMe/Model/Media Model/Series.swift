@@ -20,6 +20,6 @@ struct SeriesResults: Codable {
     let first_air_date: String?
     let overview: String?
     let poster_path: String?
-    let media_type: String?
+//    let media_type: String?
     
 }

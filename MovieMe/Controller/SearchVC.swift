@@ -35,7 +35,7 @@ class SearchVC: UIViewController {
     }
     
     private func dependencyInjection() {
-        let dataManager = DataManager(delegate: self)
+        let dataManager = MediaManager(delegate: self)
         self.dataManager = dataManager
     }
     
@@ -155,7 +155,7 @@ extension SearchVC: UICollectionViewDelegateFlowLayout {
 
 extension SearchVC: ControllerInput {
     func handleError(error: Error) {
-        
+        self.presentAlert(title: "error", err: error.localizedDescription, errType: nil)
     }
 }
 
@@ -166,25 +166,31 @@ extension SearchVC: UISearchBarDelegate {
     // TODO: Show a text for no search results
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        media.removeAll()
-//        searchCollectionView.reloadData()
-//        if searchText.count > 0 {
-//            let textToSearch = searchText.replacingOccurrences(of: " ", with: "%20")
-//            self.getData(title: textToSearch)
-//        }
-        if searchText.count == 0 {
-            media.removeAll()
-            searchCollectionView.reloadData()
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+            self?.media.removeAll()
+//            DispatchQueue.main.async {
+//                self?.searchCollectionView.reloadData()
+//            }
+            if searchText.count > 0 {
+                let textToSearch = searchText.replacingOccurrences(of: " ", with: "%20")
+                self?.getData(title: textToSearch)
+            }
+            if searchText.count == 0 {
+                self?.media.removeAll()
+                DispatchQueue.main.async {
+                    self?.searchCollectionView.reloadData()
+                }
+            }
         }
     }
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let searchText = searchBar.text else { return }
-        if searchText.count > 0 {
-            let textToSearch = searchText.replacingOccurrences(of: " ", with: "%20")
-            media.removeAll()
-            getData(title: textToSearch)
-        }
-    }
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        guard let searchText = searchBar.text else { return }
+//        if searchText.count > 0 {
+//            let textToSearch = searchText.replacingOccurrences(of: " ", with: "%20")
+//            media.removeAll()
+//            getData(title: textToSearch)
+//        }
+//    }
 }
     
