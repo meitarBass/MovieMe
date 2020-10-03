@@ -39,8 +39,8 @@ class TrendingController: UIViewController {
         setupCollectionViews()
         dependencyInjection()
         
-//        getTrendingMedia()
-//        parseDataIntoMovies()
+        getTrendingMedia()
+        parseDataIntoMovies()
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -17,8 +17,10 @@ class FavouritesVC: UIViewController {
     private var realmManager: RealmManagerProtocol?
     
     private var media: Results<MediaFavourite>?
+    private var movieToTransform: MoviesResults?
+    private var seriesToTransform: SeriesResults?
     
-    private var mediaToTransform: MoviesResults?
+    private var mediaType: MediaType?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,10 +49,14 @@ class FavouritesVC: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let discoverVC = segue.destination as? DiscoverVC else { return }
-        discoverVC.media = Media(mediaType: .Movie, movies: mediaToTransform, series: nil)
+        guard let discoverVC = segue.destination as? DiscoverVC, let mediaType = self.mediaType else { return }
+        switch mediaType {
+        case .Movie:
+            discoverVC.media = Media(mediaType: mediaType, movies: movieToTransform, series: nil)
+        case .Series:
+            discoverVC.media = Media(mediaType: mediaType, movies: nil, series: seriesToTransform)
+        }
     }
-
 }
 
 
@@ -75,7 +81,16 @@ extension FavouritesVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let media = self.media else { return }
         let specificMedia = media[indexPath.row]
-        mediaToTransform = MoviesResults(id: specificMedia.id, vote_average: specificMedia.vote_average, title: specificMedia.title, release_date: specificMedia.release_date, overview: specificMedia.overview, poster_path: specificMedia.poster_path)
+        guard let mediaType = MediaType(rawValue: specificMedia.type) else { return }
+        self.mediaType = mediaType
+        switch mediaType {
+        
+        case .Movie:
+            movieToTransform = MoviesResults(id: specificMedia.id, vote_average: specificMedia.vote_average, title: specificMedia.title, release_date: specificMedia.release_date, overview: specificMedia.overview, poster_path: specificMedia.poster_path)
+        case .Series:
+            seriesToTransform = SeriesResults(id: specificMedia.id, vote_average: specificMedia.vote_average, name: specificMedia.title, first_air_date: specificMedia.release_date, overview: specificMedia.overview, poster_path: specificMedia.poster_path)
+        }
+        
         performSegue(withIdentifier: "toDiscoverVC", sender: nil)
     }
 }

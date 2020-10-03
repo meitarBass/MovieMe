@@ -59,13 +59,13 @@ class DiscoverVC: UIViewController {
         actorsCollectionView.dataSource = self
 
         self.dependencyInjection()
-        self.getData()
+        self.getActorsData()
         self.setView(mediaType: media.mediaType)
         
         self.wasMovieLiked()
     }
     
-    private func getData() {
+    private func getActorsData() {
         var url = ""
         guard let media = media else { return }
         
@@ -110,6 +110,7 @@ class DiscoverVC: UIViewController {
         self.realmManager = realmManager
     }
 
+    // TODO: Make this function shorter
     @IBAction func favouriteButtonTapped(_ sender: Any) {
     
         let media_to_save = MediaFavourite()
@@ -138,10 +139,22 @@ class DiscoverVC: UIViewController {
         }
 
         if likeState {
-            self.realmManager?.deleteDataFromId(id: media_to_save.id, modelType: MediaFavourite.self)
+            guard let realmManager = self.realmManager, let favouriteMedia = self.favouriteMedia else { return }
+            if realmManager.isMediaSaved(id: media_to_save.id, modelType: MediaFavourite.self) {
+                guard let index = getSavedItemIndex(media: media_to_save) else { return }
+                realmManager.updateFavouriteFlag(object: favouriteMedia[index], isFavourite: false)
+            } else {
+                self.realmManager?.deleteDataFromId(id: media_to_save.id, modelType: MediaFavourite.self)
+            }
             likeState = false
         } else {
-            self.realmManager?.saveData(object: media_to_save, modelType: MediaFavourite.self)
+            guard let realmManager = self.realmManager, let favouriteMedia = self.favouriteMedia else { return }
+            if realmManager.isMediaSaved(id: media_to_save.id, modelType: MediaFavourite.self) {
+                guard let index = getSavedItemIndex(media: media_to_save) else { return }
+                realmManager.updateFavouriteFlag(object: favouriteMedia[index], isFavourite: true)
+            } else {
+                self.realmManager?.saveData(object: media_to_save, modelType: MediaFavourite.self)
+            }
             likeState = true
         }
     }
@@ -228,6 +241,11 @@ extension DiscoverVC {
         guard let date = date else { return "" }
         let year = date.split(separator: "-")
         return "\(year[0])"
+    }
+    
+    private func getSavedItemIndex(media: MediaFavourite) -> Int? {
+        guard let favouriteMedia = favouriteMedia else { return nil }
+        return(favouriteMedia.index(of: favouriteMedia.filter("id == %@", media.id).first!))
     }
 }
 
