@@ -10,9 +10,12 @@ import UIKit
 import RealmSwift
 
 protocol RealmManagerProtocol: class {
+    
     func saveData<T>(object: Object, modelType: T.Type)
     func updateFavouriteFlag(object: MediaFavourite, isFavourite: Bool)
+    
     func loadData<T: Object>(modelType: T.Type) -> Results<T>?
+    
     func deleteData<T>(object: Object, modelType: T.Type)
     func deleteDataFromId<T>(id: Int?, modelType: T.Type) where T : Object
     

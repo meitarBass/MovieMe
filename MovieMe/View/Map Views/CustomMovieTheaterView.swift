@@ -17,19 +17,19 @@ class CustomMovieTheaterView: UIView {
     
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
-    let name: String? = ""
-    let address: String? = "no address was found"
-    let distance: String? = "error"
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = #colorLiteral(red: 0.1411764706, green: 0.1411764706, blue: 0.1411764706, alpha: 1)
     }
-
-    func setLabels(name: String, distance: Int, address: String) {
+    
+    func setLabels(name: String, distance: Int, address: String, city: String) {
         distanceLabel.text = "\(Double(distance) / 1000) km"
         nameLabel.text = name
-        addressLabel.text = address
+        addressLabel.text = "\(city), \(address)"
+        
+        if name == city {
+            addressLabel.text = ""
+        }
     }
     
     func animShow(view: UIView) {

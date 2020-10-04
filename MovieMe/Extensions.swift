@@ -11,7 +11,6 @@ import UIKit
 extension UIViewController {
     func presentAlert(title: String, err: String, errType: Err?) {
         let alert = UIAlertController(title: title, message: err, preferredStyle: .alert)
-//        self.presentAlert(title: title, err: <#T##String#>)
         alert.addAction(UIAlertAction(title: "Done", style: .cancel))
         present(alert, animated: true, completion: nil)
     }

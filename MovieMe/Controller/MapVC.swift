@@ -30,11 +30,18 @@ class MapVC: UIViewController {
     
     private var chosenName: String?
     private var chosenAddress: String?
+    private var chosenCity: String?
     private var chosenDistance: Int?
+    
+    private var cityLat: Double?
+    private var cityLng: Double?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MapVC.dismissKeyBoard))
+        view.addGestureRecognizer(tap)
+        
         mapView.delegate = self
         locationManager.delegate = self
         cinemaSearchBar.delegate = self
@@ -99,10 +106,18 @@ extension MapVC: MKMapViewDelegate {
         let annotationIdentifier = "AnnotationIdentifier"
         if let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) {
             annotationView.annotation = annotation
+            guard let lat = cityLat, let lng = cityLng else { return annotationView }
+            if annotation.coordinate.latitude == lat && annotation.coordinate.longitude == lng {
+                annotationView.image = UIImage(named: "pin40green")
+            }
             return annotationView
         } else {
-            return MovieTheaterAnnotation(annotation: annotation, reuseIdentifier:
-                annotationIdentifier)
+            let annotationView = MovieTheaterAnnotation(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            guard let lat = cityLat, let lng = cityLng else { return annotationView }
+            if annotation.coordinate.latitude == lat && annotation.coordinate.longitude == lng {
+                annotationView.changeImageToCityImage()
+            }
+            return annotationView
         }
     }
     
@@ -113,10 +128,11 @@ extension MapVC: MKMapViewDelegate {
             self.chosenName = theatersList[annotation.index].name
             self.chosenDistance = theatersList[annotation.index].location.distance
             self.chosenAddress = theatersList[annotation.index].location.address
+            self.chosenCity = theatersList[annotation.index].location.city
 //            self.requestDirectionsTo(location: CLLocationCoordinate2D(latitude: theatersList[annotation.index].location.lat ?? 0, longitude: theatersList[annotation.index].location.lng ?? 0))
         }
         
-        theaterDataView.setLabels(name: chosenName ?? "nil", distance: chosenDistance ?? 0, address: chosenAddress ?? "")
+        theaterDataView.setLabels(name: chosenName ?? "nil", distance: chosenDistance ?? 0, address: chosenAddress ?? "", city: chosenCity ?? "")
         theaterDataView.animShow(view: self.view)
     }
     
@@ -282,8 +298,15 @@ extension MapVC: UISearchBarDelegate {
                 let region = MKCoordinateRegion(center: location, latitudinalMeters: 5000, longitudinalMeters: 5000)
                 self.mapView.setRegion(region, animated: true)
             }
+            self.cityLat = lat
+            self.cityLng = lng
+            self.setPoints(theater: Venue(venue: MovieTheaterResult(name: text, location: Location(address: nil, lat: lat, lng: lng, distance: 0, city: text))))
             self.getNewData(lat: String(lat), lon: String(lng))
         })
+    }
+    
+    @objc private func dismissKeyBoard() {
+        view.endEditing(true)
     }
 }
 
