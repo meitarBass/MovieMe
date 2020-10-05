@@ -30,7 +30,7 @@ APIs used:
 
 ## Screenshots
 ![Example-Home](./Images/Example-Home.png)
-![Example-Movie-Preview](./Images/Example-Moview-Preview.png)
+![Example-Movie-Preview](./Images/Example-Movie-Preview.png)
 ![Example-Search](./Images/Example-Search.png)
 ![Example-Favourite](./Images/Example-Favourite.png)
 ![Example-Map-Current](./Images/Example-Map-Current.png)
