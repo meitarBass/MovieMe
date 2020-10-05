@@ -29,12 +29,12 @@ APIs used:
 * Map Quest API [@MapQuest](http://www.mapquestapi.com)
 
 ## Screenshots
-![Example-Home](./img/Example-Home.png)
-![Example-Movie-Preview](./img/Example-Moview-Preview.png)
-![Example-Search](./img/Example-Search.png)
-![Example-Favourite](./img/Example-Favourite.png)
-![Example-Map-Current](./img/Example-Map-Current.png)
-![Example-Map-Search](./img/Example-Map-Search.png)
+![Example-Home](./Images/Example-Home.png)
+![Example-Movie-Preview](./Images/Example-Moview-Preview.png)
+![Example-Search](./Images/Example-Search.png)
+![Example-Favourite](./Images/Example-Favourite.png)
+![Example-Map-Current](./Images/Example-Map-Current.png)
+![Example-Map-Search](./Images/Example-Map-Search.png)
 
 ## Technologies
 * Xcode - version 11.6
