@@ -4,11 +4,10 @@
 ## Table of contents
 * [General info](#general-info)
 * [Screenshots](#screenshots)
+* [Setup](#Setup)
 * [Technologies](#technologies)
-* [Setup](#setup)
 * [Features](#features)
 * [Status](#status)
-* [Inspiration](#inspiration)
 * [Contact](#contact)
 
 ## General info
@@ -27,6 +26,18 @@ APIs used:
 * TMDb API [@TMDb](https://developers.themoviedb.org/3)
 * Foursquare API [@Foursquare](http://developer.foursquare.com)
 * Map Quest API [@MapQuest](http://www.mapquestapi.com)
+
+## Setup
+
+1. [Grab media data key](https://developers.themoviedb.org/3)
+
+2. [Grab movie theaters key](http://developer.foursquare.com)
+
+3. [Grab cities geocoding key](http://www.mapquestapi.com)
+
+4. Get your files into the Constant project
+
+5. Run the app
 
 ## Screenshots
 ![Example-Home](./Images/Example-Home.png)
